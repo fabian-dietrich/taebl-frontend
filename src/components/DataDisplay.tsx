@@ -87,7 +87,7 @@ export function DataDisplay() {
                   <Text fw={700}>{reservation.customerName}</Text>
                 </Group>
                 <Text size="sm">
-                 {reservation.numberOfGuests} guests – {reservation.date}, {reservation.timeSlot} – Table {reservation.tableId}
+                 {reservation.numberOfGuests} guests – {reservation.day}, {reservation.timeSlot} – Table {reservation.tableId}
                 </Text>
                 {reservation.specialRequests && (
                   <Text size="sm" c="dimmed" mt="xs">

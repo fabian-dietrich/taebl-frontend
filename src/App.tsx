@@ -1,12 +1,18 @@
 import "@mantine/core/styles.css";
+import '@mantine/notifications/styles.css';
 import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
 import { theme } from "./theme";
-import { DataDisplay } from "./components/DataDisplay";
+import { BookingInterface } from "./components/BookingInterface";
 
 export default function App() {
   return (
     <MantineProvider theme={theme}>
-      <DataDisplay />
+      <ModalsProvider>
+        <Notifications position="top-right" />
+        <BookingInterface />
+      </ModalsProvider>
     </MantineProvider>
   );
 }
