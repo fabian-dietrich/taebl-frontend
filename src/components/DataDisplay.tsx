@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Title, Text, Paper, Stack, Group, Badge, Loader } from '@mantine/core';
+import { Container, Title, Text, Paper, Stack, Group, Loader } from '@mantine/core';
 import { fetchTables, fetchReservations, Table, Reservation } from '../services/api';
 
 export function DataDisplay() {
