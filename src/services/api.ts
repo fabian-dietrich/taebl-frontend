@@ -1,5 +1,5 @@
-// const API_BASE_URL = "https://taebl-backend.onrender.com/api";
-const API_BASE_URL = "http://localhost:5005/api"; // Temporary: using local backend
+const API_BASE_URL = "https://taebl-backend.onrender.com/api";
+// const API_BASE_URL = "http://localhost:5005/api"; // localhost backend for local testing
 
 export interface Table {
   id: number;
