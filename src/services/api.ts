@@ -1,4 +1,5 @@
-const API_BASE_URL = "https://taebl-backend.onrender.com/api";
+const API_BASE_URL = "https://api.taebl.fabiandietri.ch/api";
+//const API_BASE_URL = "https://taebl-backend.onrender.com/api";
 // const API_BASE_URL = "http://localhost:5005/api"; // localhost backend for local testing
 
 export interface Table {
