@@ -10,13 +10,7 @@ import {
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useEffect } from "react";
-import {
-  Table,
-  Reservation,
-  createReservation,
-  updateReservation,
-  deleteReservation,
-} from "../services/api";
+import { Table, Reservation } from "../services/api";
 import { TIME_SLOTS, DURATION_OPTIONS, Day } from "../constants";
 
 interface BookingModalProps {
@@ -29,6 +23,14 @@ interface BookingModalProps {
   preselectedTime?: string;
   currentDay: Day;
   onSuccess: () => void;
+  demoCreate: (
+    data: Omit<Reservation, "id" | "createdAt" | "status">
+  ) => Reservation;
+  demoUpdate: (
+    id: number,
+    data: Partial<Reservation>
+  ) => Reservation | null;
+  demoDelete: (id: number) => void;
 }
 
 export function BookingModal({
@@ -41,6 +43,9 @@ export function BookingModal({
   preselectedTime,
   currentDay,
   onSuccess,
+  demoCreate,
+  demoUpdate,
+  demoDelete,
 }: BookingModalProps) {
   const isEditing = !!reservation;
 
@@ -165,7 +170,7 @@ export function BookingModal({
 
     try {
       if (isEditing && reservation) {
-        await updateReservation(reservation.id, {
+        demoUpdate(reservation.id, {
           customerName: values.customerName,
           customerPhone: values.customerPhone,
           numberOfGuests: values.numberOfGuests,
@@ -181,12 +186,12 @@ export function BookingModal({
           color: "green",
         });
       } else {
-        await createReservation({
+        demoCreate({
           customerName: values.customerName,
           customerPhone: values.customerPhone,
           numberOfGuests: values.numberOfGuests,
-          tableId: values.tableId,
-          timeSlot: values.timeSlot,
+          tableId: values.tableId!,
+          timeSlot: values.timeSlot!,
           duration: values.duration,
           specialRequests: values.specialRequests,
           day: currentDay,
@@ -210,25 +215,17 @@ export function BookingModal({
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!reservation) return;
 
-    try {
-      await deleteReservation(reservation.id);
-      notifications.show({
-        title: "Success",
-        message: "Reservation cancelled",
-        color: "blue",
-      });
-      onSuccess();
-      onClose();
-    } catch (error) {
-      notifications.show({
-        title: "Error",
-        message: "Failed to cancel reservation",
-        color: "red",
-      });
-    }
+    demoDelete(reservation.id);
+    notifications.show({
+      title: "Success",
+      message: "Reservation cancelled",
+      color: "blue",
+    });
+    onSuccess();
+    onClose();
   };
 
   // Handle modal close - reset form

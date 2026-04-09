@@ -1,40 +1,35 @@
-import { useState, useEffect } from 'react';
-import { Box, Loader, Center, Text } from '@mantine/core';
-import { fetchTables, fetchReservations, Table, Reservation } from '../services/api';
-import { Navbar } from './Navbar';
-import { ScheduleGrid } from './ScheduleGrid';
-import { BookingModal } from './BookingModal';
-import { Day } from '../constants';
+import { useEffect } from "react";
+import { Box, Loader, Center, Text } from "@mantine/core";
+import { Reservation } from "../services/api";
+import { useDemoState } from "../hooks/useDemoState";
+import { Navbar } from "./Navbar";
+import { ScheduleGrid } from "./ScheduleGrid";
+import { BookingModal } from "./BookingModal";
+import { Day } from "../constants";
+import { useState } from "react";
 
 export function BookingInterface() {
-  const [tables, setTables] = useState<Table[]>([]);
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [currentDay, setCurrentDay] = useState<Day>('today');
+  const {
+    tables,
+    reservations,
+    loading,
+    loadData,
+    createReservation,
+    updateReservation,
+    deleteReservation,
+  } = useDemoState();
+
+  const [currentDay, setCurrentDay] = useState<Day>("today");
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedReservation, setSelectedReservation] = useState<Reservation | undefined>();
+  const [selectedReservation, setSelectedReservation] = useState<
+    Reservation | undefined
+  >();
   const [selectedTable, setSelectedTable] = useState<number | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [tablesData, reservationsData] = await Promise.all([
-        fetchTables(),
-        fetchReservations(),
-      ]);
-      setTables(tablesData);
-      setReservations(reservationsData);
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   const handleAddBooking = () => {
     setSelectedReservation(undefined);
@@ -43,14 +38,16 @@ export function BookingInterface() {
     setModalOpen(true);
   };
 
-  const handleCellClick = (tableId: number, timeSlot: string, reservation?: Reservation) => {
+  const handleCellClick = (
+    tableId: number,
+    timeSlot: string,
+    reservation?: Reservation
+  ) => {
     if (reservation) {
-      // Clicking occupied cell - edit existing reservation
       setSelectedReservation(reservation);
       setSelectedTable(undefined);
       setSelectedTime(undefined);
     } else {
-      // Clicking empty cell - create new reservation
       setSelectedReservation(undefined);
       setSelectedTable(tableId);
       setSelectedTime(timeSlot);
@@ -59,28 +56,28 @@ export function BookingInterface() {
   };
 
   const handleModalSuccess = () => {
-    loadData(); // Refresh data after any change
+    // No-op in demo mode — state is already updated locally
   };
 
   if (loading) {
     return (
-      <Center style={{ height: '100vh' }}>
+      <Center style={{ height: "100vh" }}>
         <Loader size="xl" />
       </Center>
     );
   }
 
   return (
-    <Box style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar
         currentDay={currentDay}
         onDayChange={setCurrentDay}
         onAddBooking={handleAddBooking}
       />
 
-      <Box style={{ flex: 1, overflow: 'hidden' }}>
+      <Box style={{ flex: 1, overflow: "hidden" }}>
         {reservations.length === 0 && tables.length === 0 ? (
-          <Center style={{ height: '100%' }}>
+          <Center style={{ height: "100%" }}>
             <Text c="dimmed">No data available</Text>
           </Center>
         ) : (
@@ -103,6 +100,9 @@ export function BookingInterface() {
         preselectedTime={selectedTime}
         currentDay={currentDay}
         onSuccess={handleModalSuccess}
+        demoCreate={createReservation}
+        demoUpdate={updateReservation}
+        demoDelete={deleteReservation}
       />
     </Box>
   );
